@@ -67,6 +67,9 @@ function mergeAllWindows() {
 			chrome.windows.remove(window.id);
 		});
 
-		chrome.windows.update(activeWindowId, { focused: true });
+		chrome.windows.update(activeWindowId, {
+			focused: true,
+			state: 'maximized',
+		});
 	});
 }
