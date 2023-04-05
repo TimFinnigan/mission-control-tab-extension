@@ -33,5 +33,9 @@
             },
             "description": "Break out tabs into smaller windows"
         }
-    }
+    },
+    "permissions": [
+        "tabs",
+        "storage"
+    ]
 }
