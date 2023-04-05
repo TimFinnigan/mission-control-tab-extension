@@ -1,5 +1,3 @@
-let screenDimensions = { width: 0, height: 0 };
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.action === 'screenDimensions') {
 		screenDimensions = request.dimensions;
@@ -30,11 +28,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 					},
 					(newWindow) => {
 						chrome.storage.sync.set({ isOriginalWindow: false });
-						chrome.windows.getCurrent((window) => {
+						if (index === 0) {
 							chrome.storage.local.set({
-								originalWindowId: window.id,
+								originalWindowId: newWindow.id,
 							});
-						});
+						}
 					}
 				);
 
@@ -45,30 +43,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 				}
 			});
 		});
-	} else if (request.action === 'windowClicked') {
-		if (request.originalWindowId) {
-			mergeAllWindows(request.originalWindowId);
-		}
+	} else if (request.action === 'merge_windows') {
+		mergeAllWindows();
 	}
 });
 
-function mergeAllWindows(originalWindowId) {
+function mergeAllWindows() {
 	chrome.windows.getAll({ populate: true }, (windows) => {
-		const originalWindow = windows.find((w) => w.id === originalWindowId);
-		if (!originalWindow) return;
+		const activeWindowId = windows.find((w) => w.focused === true).id;
+		const activeTabIndex = windows
+			.find((w) => w.focused === true)
+			.tabs.findIndex((t) => t.active === true);
 
 		windows.forEach((window) => {
-			if (window.id === originalWindowId) return;
+			if (window.id === activeWindowId) return;
 
-			window.tabs.forEach((tab) => {
+			window.tabs.forEach((tab, index) => {
 				chrome.tabs.move(tab.id, {
-					windowId: originalWindow.id,
-					index: -1,
+					windowId: activeWindowId,
+					index: activeTabIndex + index + 1,
 				});
 			});
 			chrome.windows.remove(window.id);
 		});
 
-		chrome.windows.update(originalWindow.id, { focused: true });
+		chrome.windows.update(activeWindowId, { focused: true });
 	});
 }

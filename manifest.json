@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Tab Breakout",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Press CMD + Shift + U to break out all open tabs into smaller windows.",
     "permissions": [
         "tabs"
@@ -32,6 +32,13 @@
                 "mac": "MacCtrl+Shift+U"
             },
             "description": "Break out tabs into smaller windows"
+        },
+        "merge_windows": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+M",
+                "mac": "MacCtrl+Shift+M"
+            },
+            "description": "Merge all windows into the active window"
         }
     },
     "permissions": [

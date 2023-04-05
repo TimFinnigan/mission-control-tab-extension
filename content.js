@@ -14,15 +14,5 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('click', () => {
-	chrome.storage.local.get(
-		['isOriginalWindow', 'originalWindowId'],
-		(data) => {
-			if (!data.isOriginalWindow && data.originalWindowId) {
-				chrome.runtime.sendMessage({
-					action: 'windowClicked',
-					originalWindowId: data.originalWindowId,
-				});
-			}
-		}
-	);
+	chrome.runtime.sendMessage({ action: 'merge_windows' });
 });
